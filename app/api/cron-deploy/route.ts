@@ -26,8 +26,10 @@ export async function POST(req: NextRequest) {
     console.log("Pulling from git");
 
     await execPromise("npm run build");
+    console.log("Building the app");
 
     await execPromise("pm2 restart crafto-admin");
+    console.log("Restarting the app")
 
     return NextResponse.json(
       { message: "Deployment successful" },
