@@ -7,6 +7,7 @@ import Link from "next/link";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import useAuth from "@/hooks/useAuth";
 
 const font = Montserrat({
   weight: "600",
@@ -14,7 +15,7 @@ const font = Montserrat({
 });
 
 export const LandingNavbar = () => {
-  
+  const { isSignedIn } = useAuth();
 
   return (
     <nav className="p-4 bg-transparent flex items-center justify-between">
@@ -27,14 +28,14 @@ export const LandingNavbar = () => {
           />
         </div>
         <h1 className={cn('text-2xl font-bold text-white', font.className)}>
-             Crafto
+             DZ Group
         </h1>
       </Link>
       <div className="flex items-center gap-x-2">
         <Link
-        href={'/sign-in'}
+        href={isSignedIn?'/onboarding' : '/sign-in'}
         >
-            <Button variant='outline' className="rounded-full">Get Started</Button>
+            <Button variant='outline' className="rounded-full cursor-pointer">Get Started</Button>
         </Link>
 
       </div>
