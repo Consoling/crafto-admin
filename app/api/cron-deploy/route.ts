@@ -1,65 +1,43 @@
-import { NextApiRequest, NextApiResponse } from 'next';
+import { NextRequest, NextResponse } from 'next/server';  // Use NextRequest and NextResponse in the app directory
 import { exec } from 'child_process';
 import * as crypto from 'crypto';
 
+export async function POST(req: NextRequest, ) {
+ 
 
-interface WebhookPayload {
-  ref: string;
-  repository: {
-    name: string;
-    owner: {
-      name: string;
-    };
-  };
+  const secret = process.env.GITHUB_WEBHOOK_SECRET;
+  const receivedSignature = req.headers.get('x-hub-signature') as string;
+
+  if (!secret) {
+    return NextResponse.json({ message: 'Webhook secret is not set' }, { status: 500 });
+  }
+
+  const hmac = crypto.createHmac('sha1', secret);
+  hmac.update(await req.text());
+  const signature = `sha1=${hmac.digest('hex')}`;
+
+  if (receivedSignature !== signature) {
+    return NextResponse.json({ message: 'Invalid signature' }, { status: 400 });
+  }
+
+  try {
   
-}
+    await execPromise('git pull origin main');
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method === 'POST') {
-    const secret = process.env.GITHUB_WEBHOOK_SECRET;  
-    const receivedSignature = req.headers['x-hub-signature'] as string;
-
-    if (!secret) {
-      return res.status(500).json({ message: 'Webhook secret is not set' });
-    }
-
-  
-    const hmac = crypto.createHmac('sha1', secret);
-    hmac.update(JSON.stringify(req.body));
-    const signature = `sha1=${hmac.digest('hex')}`;
-
-    if (receivedSignature !== signature) {
-      return res.status(400).json({ message: 'Invalid signature' });
-    }
+// Build the Next.js app
+    await execPromise('npm run build');
 
     
-    try {
-   
-      await execPromise('git pull origin main');  
+    await execPromise('pm2 restart crafto-admin');
 
-     
-    //   const testResult = await execPromise('npm test'); 
-    //   if (testResult.includes('Failed')) {
-    //     return res.status(500).json({ message: 'Tests failed, deployment canceled' });
-    //   }
-
-      // Build the Next.js app
-      await execPromise('npm run build');
-
-      // Restart the server (e.g., with PM2)
-      await execPromise('pm2 restart next-app');
-
-      return res.status(200).json({ message: 'Deployment successful' });
-    } catch (error) {
-      console.error('Error during deployment:', error);
-      return res.status(500).json({ message: 'Deployment failed', error: (error as Error).message });
-    }
-  } else {
-    return res.status(405).json({ message: 'Method Not Allowed' });
+    return NextResponse.json({ message: 'Deployment successful' }, { status: 200 });
+  } catch (error) {
+    console.error('Error during deployment:', error);
+    return NextResponse.json({ message: 'Deployment failed', error: (error as Error).message }, { status: 500 });
   }
 }
 
-// Helper function to wrap exec in a Promise with proper typing
+
 function execPromise(command: string): Promise<string> {
   return new Promise((resolve, reject) => {
     exec(command, (error, stdout, stderr) => {
