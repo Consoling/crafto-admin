@@ -25,6 +25,9 @@ export async function POST(req: NextRequest) {
     await execPromise("git pull origin master");
     console.log("Pulling from git");
 
+    await execPromise("npm install --legacy-peer-deps");
+    console.log("Installing dependencies");
+
     await execPromise("npm run build");
     console.log("Building the app");
 
