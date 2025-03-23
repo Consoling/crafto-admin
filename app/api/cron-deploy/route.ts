@@ -22,7 +22,7 @@ export async function POST(req: NextRequest, ) {
 
   try {
   
-    await execPromise('git pull origin main');
+    await execPromise('git pull origin master');
 
 // Build the Next.js app
     await execPromise('npm run build');
