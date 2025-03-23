@@ -24,7 +24,7 @@ export async function POST(req: NextRequest, ) {
   
     await execPromise('git pull origin master');
 
-// Build the Next.js app
+
     await execPromise('npm run build');
 
     
