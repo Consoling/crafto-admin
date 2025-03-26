@@ -28,12 +28,12 @@ export const LandingNavbar = () => {
           />
         </div>
         <h1 className={cn('text-2xl font-bold text-white', font.className)}>
-             DZ Group
+             Crafto
         </h1>
       </Link>
       <div className="flex items-center gap-x-2">
         <Link
-        href={isSignedIn?'/onboarding' : '/sign-in'}
+        href={isSignedIn?'/admin/dashboard' : '/sign-in'}
         >
             <Button variant='outline' className="rounded-full cursor-pointer">Get Started</Button>
         </Link>

@@ -1,6 +1,6 @@
 import { Toaster } from "sonner";
 
-const LandingLayout = ({
+const AuthLayout = ({
     children
 }: {
    children:  React.ReactNode;
@@ -15,4 +15,4 @@ const LandingLayout = ({
     )
 }
 
-export default LandingLayout;
+export default AuthLayout;

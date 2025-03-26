@@ -8,6 +8,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { toast } from "sonner";
+import { useUser } from "@/context/UserContext";
 
 const passwordRegex =
   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
@@ -28,6 +29,7 @@ type SignUpFormData = z.infer<typeof signUpSchema>;
 
 const SignUp = () => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const { setUserData } = useUser();
   const {
     register,
     handleSubmit,
@@ -58,15 +60,25 @@ const SignUp = () => {
       const responseData = await response.json();
 
       if (response.ok) {
-        console.log("Signup Successful:", responseData);
+        
+        const { token, admin } = responseData;
+        localStorage.setItem('adminToken', token); // Save token
+        setUserData({
+          username: admin.username,
+          email: admin.email,
+          role: admin.role,
+          _id: admin._id,
+        }); 
+        
         toast("Signup successful!");
+        window.location.href = '/admin/dashboard';
       } else {
         console.error("Signup failed:", responseData.message);
         toast(responseData.message || "Signup failed");
       }
     } catch (error) {
       console.error("Error occurred:", error);
-      alert("An error occurred while signing up");
+      toast("An error occurred while signing up");
     }
   };
 

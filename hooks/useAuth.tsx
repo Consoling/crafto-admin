@@ -5,7 +5,7 @@ const useAuth = () => {
 
   useEffect(() => {
     
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("adminToken");
 
     
     if (token) {

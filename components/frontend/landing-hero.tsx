@@ -33,7 +33,7 @@ export const LandingHero = () => {
         Manage your App's Templates 10x faster⚡.
       </div>
       <div>
-        <Link href={isSignedIn ? "/onboarding" : "/sign-in"}>
+        <Link href={isSignedIn ? "/admin/dashboard" : "/sign-in"}>
           <Button
             variant="premium"
             className="md:text-lg p-4 md:p-6 rounded-full font-semibold cursor-pointer"
