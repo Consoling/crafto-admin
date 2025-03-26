@@ -24,7 +24,7 @@ export const LandingNavbar = () => {
           <Image 
           fill
           alt='logo'
-          src='/crafto-admin/favicon.ico'
+          src='/favicon.ico'
           />
         </div>
         <h1 className={cn('text-2xl font-bold text-white', font.className)}>
